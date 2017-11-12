@@ -26,5 +26,20 @@ class Behavior:
     def sense_and_act(self):
         pass
 
+class FollowLine(Behavior):
+    pass
+
+class AvoidObstacle(Behavior):
+    pass
+
+class CheckDepth(Behavior):
+    pass
+
+
+
+class CheckColor(Behavior):
+    pass
+
+
 
 
