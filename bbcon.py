@@ -1,15 +1,37 @@
 import time
+import behavior
+import reflectance_sensors
+import ultrasonic
+import camera
+import sensob
+
 
 class BBCON:
 
-    def __init__(self, behaviors, active_behaviors, sensobs, motobs, arbitrator, current_timestep=None, inactive_bahaviors=None, controlled_robot=None):
-        self.behaviors = behaviors
-        self.active_behaviors = active_behaviors
-        self.sensobs = sensobs
+    def __init__(self, motobs, arbitrator, current_timestep=None, controlled_robot=None):
+
+        #Sensorene vi bruker
+        self.reflect = reflectance_sensors.ReflectanceSensors()
+        self.ultra = ultrasonic.Ultrasonic()
+        self.camera = camera.Camera()
+
+        #Sensobsene våre
+        self.reflectandultra = sensob.Sensob(self.reflect, self.ultra)
+        self.cameraandultra = sensob.Sensob(self.camera, self.ultra)
+
+        #behaviorsene våre
+        self.followline = behavior.FollowLine(self, self.reflectandultra)
+        self.avoidobstacle = behavior.AvoidObstacle()
+        self.checkdepth = behavior.CheckDepth()
+        self.checkcolor = behavior.CheckColor()
+
+        self.behaviors = [self.followline,self.avoidobstacle,self.checkdepth,self.checkcolor]
+        self.active_behaviors = []
+        self.sensobs = [self.reflectandultra, self.cameraandultra]
         self.motobs = motobs
         self.arbitrator = arbitrator
         self.current_timestep = current_timestep
-        self.inactive_behaviors = inactive_bahaviors
+        self.inactive_behaviors = []
         self.controlled_robot = controlled_robot
 
     def add_behavior(self, behavior):
