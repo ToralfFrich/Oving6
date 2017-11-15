@@ -57,7 +57,32 @@ class AvoidObstacle(Behavior):
     pass
 
 class CheckDepth(Behavior):
-    pass
+
+    def __init__(self, bbcon, sensob):
+        super().__init__(bbcon, sensob)
+
+    def consider_activation(self):
+        if self.sensob.update()[0] > 10:
+            self.active_flag = True
+
+    def consider_deactivation(self):
+        if self.sensob.update()[0] < 10:
+            self.active_flag = False
+
+    def update(self):
+        self.consider_activation()
+        if not self.active_flag:
+            self.match_degree = 0
+            return
+        #Kjører hvis active flag == True
+        self.sense_and_act()
+        self.weight = self.priority * self.match_degree
+        self.consider_deactivation()
+
+    def sense_and_act(self):
+        self.motor_recommandations = (0,0)
+        self.priority = 0.9
+        self.match_degree = 0.9
 
 
 
